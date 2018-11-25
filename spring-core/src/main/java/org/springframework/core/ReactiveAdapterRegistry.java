@@ -62,6 +62,7 @@ public class ReactiveAdapterRegistry {
 	 * @see #getSharedInstance()
 	 */
 	public ReactiveAdapterRegistry() {
+		System.out.println("Essa linha vai ser printada no startup!");
 
 		ClassLoader classLoader = ReactiveAdapterRegistry.class.getClassLoader();
 

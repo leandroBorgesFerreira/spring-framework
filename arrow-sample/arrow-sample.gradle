@@ -1,0 +1,39 @@
+description = "Arrow Integration Sample"
+apply plugin: 'kotlin-spring'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+buildscript {
+    ext {
+        springBootVersion = '2.1.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencyManagement {
+    imports {
+        mavenBom "io.projectreactor:reactor-bom:${reactorVersion}"
+        mavenBom "io.netty:netty-bom:${nettyVersion}"
+        mavenBom "org.eclipse.jetty:jetty-bom:${jettyVersion}"
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile(project(":spring-core"))
+
+    implementation "io.reactivex.rxjava2:rxjava:2.2.4"
+}
