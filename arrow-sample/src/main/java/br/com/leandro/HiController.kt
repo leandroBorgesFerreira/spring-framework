@@ -1,8 +1,9 @@
 package br.com.leandro
 
 import arrow.effects.SingleK
-import com.google.gson.Gson
+import arrow.effects.k
 import io.reactivex.Single
+import kotlinx.coroutines.Dispatchers
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -13,9 +14,13 @@ class HiController() {
 	fun sayHi(): Single<String> {
 		println("lalalalalalal")
 
-		val ha = Gson().fromJson<Single<String>>(SingleK.just("test"))
-
-		println(ha)
+		Single.just("Hello!")
+				.k()
+				.continueOn(Dispatchers.Main)
+				.single
+				.subscribe { word ->
+					println(word)
+				}
 
 		return Single.just("Hello!")
 	}
