@@ -23,8 +23,12 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import arrow.effects.FlowableKKt;
+import arrow.effects.SingleK;
+import arrow.effects.SingleKKt;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -62,7 +66,7 @@ public class ReactiveAdapterRegistry {
 	 * @see #getSharedInstance()
 	 */
 	public ReactiveAdapterRegistry() {
-		System.out.println("Essa linha vai ser printada no startup!");
+		System.out.println("Essa linha vai ser printada no startup!Essa linha vai ser printada no startup!Essa linha vai ser printada no startup!");
 
 		ClassLoader classLoader = ReactiveAdapterRegistry.class.getClassLoader();
 
@@ -83,6 +87,10 @@ public class ReactiveAdapterRegistry {
 		// RxJava2
 		if (ClassUtils.isPresent("io.reactivex.Flowable", classLoader)) {
 			new RxJava2Registrar().registerAdapters(this);
+		}
+
+		if (ClassUtils.isPresent("arrow.effects.SingleK", classLoader)) {
+			new ArrowRx2EffectsRegistrar().registerAdapter(this);
 		}
 
 		// Java 9+ Flow.Publisher
@@ -230,6 +238,18 @@ public class ReactiveAdapterRegistry {
 					ReactiveTypeDescriptor.noValue(rx.Completable.class, rx.Completable::complete),
 					source -> RxReactiveStreams.toPublisher((rx.Completable) source),
 					RxReactiveStreams::toCompletable
+			);
+		}
+	}
+
+
+	private static class ArrowRx2EffectsRegistrar {
+
+		void registerAdapter(ReactiveAdapterRegistry registry) {
+			registry.registerReactiveType(
+					ReactiveTypeDescriptor.singleRequiredValue(io.reactivex.Single.class),
+					source -> ((SingleK<?>) source).getSingle().toFlowable(),
+					source -> SingleKKt.k(Flowable.fromPublisher(source).toObservable().singleElement().toSingle())
 			);
 		}
 	}

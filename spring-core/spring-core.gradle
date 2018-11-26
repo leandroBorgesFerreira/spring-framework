@@ -61,10 +61,24 @@ task objenesisRepackJar(type: Jar) { repackJar ->
 	}
 }
 
+def arrow = "0.8.1"
+
 dependencies {
 	cglib("cglib:cglib:${cglibVersion}@jar")
 	objenesis("org.objenesis:objenesis:${objenesisVersion}@jar")
 	jarjar("org.pantsbuild:jarjar:1.6.6")
+
+    compile("io.arrow-kt:arrow-core:$arrow")
+    compile("io.arrow-kt:arrow-syntax:$arrow")
+    compile("io.arrow-kt:arrow-typeclasses:$arrow")
+    compile("io.arrow-kt:arrow-data:$arrow")
+    compile("io.arrow-kt:arrow-instances-core:$arrow")
+    compile("io.arrow-kt:arrow-instances-data:$arrow")
+    compile("io.arrow-kt:arrow-effects:$arrow")
+    compile("io.arrow-kt:arrow-effects-instances:$arrow")
+    compile("io.arrow-kt:arrow-effects-rx2:$arrow")
+    compile("io.arrow-kt:arrow-effects-rx2-instances:$arrow")
+    kapt("io.arrow-kt:arrow-annotations-processor:$arrow")
 
 	compile(files(cglibRepackJar))
 	compile(files(objenesisRepackJar))
